@@ -35,14 +35,6 @@ export const metadata: Metadata = {
   publisher: "Transkripin",
   category: "productivity",
   alternates: { canonical: "/" },
-  icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico" },
-    ],
-    apple: "/apple-touch-icon.png",
-    shortcut: "/favicon.ico",
-  },
   manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
