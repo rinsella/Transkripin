@@ -23,10 +23,10 @@ export function formatBytes(bytes: number): string {
   return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`;
 }
 
-export const ACCEPTED_AUDIO_EXT = [".mp3", ".wav", ".m4a", ".webm", ".ogg"];
+export const ACCEPTED_AUDIO_EXT = [".mp3", ".wav", ".m4a", ".webm", ".ogg", ".flac", ".mp4"];
 
 // Browser memory safe limit. Untuk file lebih besar, sarankan whisper.cpp self-host.
-export const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
+export const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB (match backend MAX_UPLOAD_MB)
 
 export function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);

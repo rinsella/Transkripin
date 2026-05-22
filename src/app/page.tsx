@@ -123,7 +123,7 @@ export default function HomePage() {
     <>
       {/* HERO */}
       <section className="hero-bg relative overflow-hidden">
-        <div className="container py-16 md:py-24">
+        <div className="container py-10 sm:py-16 md:py-24">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -131,13 +131,15 @@ export default function HomePage() {
             className="mx-auto max-w-3xl text-center"
           >
             <Badge variant="default" className="mb-4">
-              <Sparkles className="mr-1 h-3 w-3" /> Server-side transcription · Tanpa API berbayar
+              <Sparkles className="mr-1 h-3 w-3" />{" "}
+              <span className="hidden sm:inline">Server-side transcription · </span>
+              Tanpa API berbayar
             </Badge>
-            <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-6xl">
               Transkripin —{" "}
               <span className="gradient-text">Ubah Suara Jadi Teks Gratis</span>
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground md:text-lg">
+            <p className="mx-auto mt-4 max-w-2xl text-sm text-muted-foreground sm:text-base md:text-lg">
               Upload audio, lalu server akan memproses transkripsi menggunakan
               Whisper open-source (faster-whisper). Browser hanya mengunggah
               audio dan menerima hasil teks.
@@ -161,7 +163,7 @@ export default function HomePage() {
       </section>
 
       {/* WORKSPACE */}
-      <section className="container pb-16">
+      <section id="workspace" className="container pb-12 sm:pb-16">
         <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
           {/* LEFT: input + result */}
           <div className="space-y-6">
@@ -183,14 +185,19 @@ export default function HomePage() {
 
                 <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)}>
                   <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="upload">
-                      <Upload className="h-4 w-4" /> Upload Audio
+                    <TabsTrigger value="upload" className="gap-1 px-2 text-xs sm:gap-2 sm:text-sm">
+                      <Upload className="h-4 w-4" />
+                      <span>Upload</span>
+                      <span className="hidden md:inline">&nbsp;Audio</span>
                     </TabsTrigger>
-                    <TabsTrigger value="record">
-                      <Mic className="h-4 w-4" /> Rekam + Server
+                    <TabsTrigger value="record" className="gap-1 px-2 text-xs sm:gap-2 sm:text-sm">
+                      <Mic className="h-4 w-4" />
+                      <span>Rekam</span>
+                      <span className="hidden md:inline">&nbsp;+ Server</span>
                     </TabsTrigger>
-                    <TabsTrigger value="realtime">
-                      <Radio className="h-4 w-4" /> Realtime
+                    <TabsTrigger value="realtime" className="gap-1 px-2 text-xs sm:gap-2 sm:text-sm">
+                      <Radio className="h-4 w-4" />
+                      <span>Realtime</span>
                     </TabsTrigger>
                   </TabsList>
 

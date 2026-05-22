@@ -41,8 +41,7 @@ export function AudioUploader({
     }
     if (file.size > MAX_FILE_SIZE) {
       setError(
-        `Ukuran maksimal 25MB (file Anda ${formatBytes(file.size)}). ` +
-          "Untuk file panjang, gunakan versi server self-hosted whisper.cpp."
+        `Ukuran maksimal 100MB (file Anda ${formatBytes(file.size)}).`
       );
       return;
     }
@@ -99,7 +98,7 @@ export function AudioUploader({
         </div>
         <p className="text-sm font-medium">Klik atau seret file ke sini</p>
         <p className="text-xs text-muted-foreground">
-          MP3, WAV, M4A, WEBM, OGG · maks 25MB
+          MP3, WAV, M4A, WEBM, OGG, FLAC, MP4 · maks 100MB
         </p>
         <input
           ref={inputRef}
