@@ -1,0 +1,12 @@
+{
+  "name": "Transkripin",
+  "short_name": "Transkripin",
+  "description": "Ubah suara jadi teks gratis dengan Whisper open-source self-hosted.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0b10",
+  "theme_color": "#7c3aed",
+  "icons": [
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any maskable" }
+  ]
+}

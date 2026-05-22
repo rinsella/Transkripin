@@ -7,7 +7,7 @@ import {
   Upload,
   Sparkles,
   Languages,
-  Cpu,
+  Server,
   ShieldCheck,
   Radio,
 } from "lucide-react";
@@ -25,7 +25,10 @@ import { Badge } from "@/components/ui/badge";
 import { AudioRecorder, type RecordingResult } from "@/components/AudioRecorder";
 import { AudioUploader, type UploadedAudio } from "@/components/AudioUploader";
 import { RealtimeSpeech } from "@/components/RealtimeSpeech";
-import { LocalWhisperTranscriber } from "@/components/LocalWhisperTranscriber";
+import {
+  ServerTranscriber,
+  type ServerTranscribeResult,
+} from "@/components/ServerTranscriber";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import {
   OutputModeSelector,
@@ -48,7 +51,7 @@ function makeId() {
 }
 
 export default function HomePage() {
-  const [tab, setTab] = useState<Tab>("realtime");
+  const [tab, setTab] = useState<Tab>("upload");
 
   const [language, setLanguage] = useState("auto");
   const [outputMode, setOutputMode] = useState<OutputMode>("plain");
@@ -65,6 +68,12 @@ export default function HomePage() {
     return null;
   }, [tab, upload, recording]);
 
+  const localFileName: string | undefined = useMemo(() => {
+    if (tab === "upload") return upload?.file?.name;
+    if (tab === "record") return recording?.fileName;
+    return undefined;
+  }, [tab, upload, recording]);
+
   function handleRealtimeCommit(text: string) {
     const data: TranscriptData = {
       id: makeId(),
@@ -78,20 +87,23 @@ export default function HomePage() {
     setTranscript(data);
   }
 
-  function handleWhisperResult(r: { text: string; language: string; modelId: string }) {
+  function handleServerResult(r: ServerTranscribeResult) {
     const sourceFile =
       tab === "upload" ? upload?.file?.name : recording?.fileName;
     const data: TranscriptData = {
       id: makeId(),
-      title: sourceFile ? sourceFile.replace(/\.[^.]+$/, "") : `Whisper ${new Date().toLocaleString()}`,
+      title: sourceFile
+        ? sourceFile.replace(/\.[^.]+$/, "")
+        : `Server ${new Date().toLocaleString()}`,
       text: r.text,
       language: r.language || language,
       outputMode,
-      source: "local-whisper",
+      source: "server-whisper",
       modelId: r.modelId,
       fileName: sourceFile,
       durationSec:
-        tab === "upload" ? upload?.durationSec : recording?.durationSec,
+        r.duration ||
+        (tab === "upload" ? upload?.durationSec : recording?.durationSec),
       fileSize: tab === "upload" ? upload?.size : recording?.size,
       createdAt: Date.now(),
     };
@@ -119,29 +131,29 @@ export default function HomePage() {
             className="mx-auto max-w-3xl text-center"
           >
             <Badge variant="default" className="mb-4">
-              <Sparkles className="mr-1 h-3 w-3" /> 100% Gratis · Tanpa API berbayar
+              <Sparkles className="mr-1 h-3 w-3" /> Server-side transcription · Tanpa API berbayar
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight md:text-6xl">
               Transkripin —{" "}
               <span className="gradient-text">Ubah Suara Jadi Teks Gratis</span>
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground md:text-lg">
-              Rekam suara, upload audio, dan dapatkan teks transkripsi langsung dari
-              browser tanpa API berbayar. Web Speech API untuk realtime, Whisper lokal
-              (Transformers.js) untuk file audio.
+              Upload audio, lalu server akan memproses transkripsi menggunakan
+              Whisper open-source (faster-whisper). Browser hanya mengunggah
+              audio dan menerima hasil teks.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
               <Badge variant="outline">
                 <Languages className="mr-1 h-3 w-3" /> 6 bahasa
               </Badge>
               <Badge variant="outline">
-                <Radio className="mr-1 h-3 w-3" /> Realtime browser
+                <Radio className="mr-1 h-3 w-3" /> Realtime browser (opsional)
               </Badge>
               <Badge variant="outline">
-                <Cpu className="mr-1 h-3 w-3" /> Whisper lokal
+                <Server className="mr-1 h-3 w-3" /> faster-whisper @ server
               </Badge>
               <Badge variant="outline">
-                <ShieldCheck className="mr-1 h-3 w-3" /> Privasi: audio diproses di browser
+                <ShieldCheck className="mr-1 h-3 w-3" /> File temporary &amp; auto-hapus
               </Badge>
             </div>
           </motion.div>
@@ -159,8 +171,8 @@ export default function HomePage() {
                   <Mic className="h-5 w-5" /> Audio Input
                 </CardTitle>
                 <CardDescription>
-                  Pilih cara transkripsi: realtime via Web Speech API, atau upload/rekam
-                  audio dan proses dengan Whisper lokal.
+                  Pilih cara transkripsi: upload/rekam audio dan proses di
+                  server, atau gunakan realtime via Web Speech API.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
@@ -171,45 +183,51 @@ export default function HomePage() {
 
                 <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)}>
                   <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="realtime">
-                      <Radio className="h-4 w-4" /> Realtime
-                    </TabsTrigger>
                     <TabsTrigger value="upload">
                       <Upload className="h-4 w-4" /> Upload Audio
                     </TabsTrigger>
                     <TabsTrigger value="record">
-                      <Mic className="h-4 w-4" /> Rekam + Whisper
+                      <Mic className="h-4 w-4" /> Rekam + Server
+                    </TabsTrigger>
+                    <TabsTrigger value="realtime">
+                      <Radio className="h-4 w-4" /> Realtime
                     </TabsTrigger>
                   </TabsList>
+
+                  <TabsContent value="upload" className="space-y-4 pt-4">
+                    <BrowserSupportWarning
+                      tone="info"
+                      message="Transkripsi diproses di server menggunakan Whisper open-source (faster-whisper). Browser hanya mengunggah audio dan menerima hasil teks. Tidak memakai API berbayar."
+                    />
+                    <AudioUploader onSelected={setUpload} />
+                    <ServerTranscriber
+                      file={localFile}
+                      fileName={localFileName}
+                      language={language}
+                      outputMode={outputMode}
+                      onResult={handleServerResult}
+                    />
+                  </TabsContent>
+
+                  <TabsContent value="record" className="space-y-4 pt-4">
+                    <BrowserSupportWarning
+                      tone="info"
+                      message="Rekam audio dari mikrofon, lalu unggah ke server untuk ditranskripsi dengan faster-whisper."
+                    />
+                    <AudioRecorder onReady={setRecording} />
+                    <ServerTranscriber
+                      file={localFile}
+                      fileName={localFileName}
+                      language={language}
+                      outputMode={outputMode}
+                      onResult={handleServerResult}
+                    />
+                  </TabsContent>
 
                   <TabsContent value="realtime" className="pt-4">
                     <RealtimeSpeech
                       language={language}
                       onCommit={handleRealtimeCommit}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="upload" className="space-y-4 pt-4">
-                    <BrowserSupportWarning
-                      tone="info"
-                      message="Audio Anda diproses langsung di browser. Untuk file panjang (>10 menit) atau perangkat lemah, pertimbangkan whisper.cpp self-hosted (lihat README)."
-                    />
-                    <AudioUploader onSelected={setUpload} />
-                    <LocalWhisperTranscriber
-                      file={localFile}
-                      language={language}
-                      outputMode={outputMode}
-                      onResult={handleWhisperResult}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="record" className="space-y-4 pt-4">
-                    <AudioRecorder onReady={setRecording} />
-                    <LocalWhisperTranscriber
-                      file={localFile}
-                      language={language}
-                      outputMode={outputMode}
-                      onResult={handleWhisperResult}
                     />
                   </TabsContent>
                 </Tabs>

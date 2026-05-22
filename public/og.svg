@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0b10"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g transform="translate(80 200)">
+    <rect width="120" height="120" rx="28" fill="url(#accent)"/>
+    <g transform="translate(28 22)" fill="#0b0b10">
+      <rect x="20" y="0" width="24" height="38" rx="12"/>
+      <path d="M8 38a24 24 0 0 0 48 0h-6a18 18 0 0 1-36 0H8z"/>
+      <rect x="29" y="58" width="6" height="9" rx="2"/>
+      <rect x="18" y="68" width="28" height="5" rx="2"/>
+    </g>
+  </g>
+  <text x="240" y="290" font-family="system-ui, -apple-system, Segoe UI, Roboto" font-size="82" font-weight="800" fill="#ffffff">Transkripin</text>
+  <text x="240" y="360" font-family="system-ui, -apple-system, Segoe UI, Roboto" font-size="38" font-weight="500" fill="url(#accent)">Ubah Suara Jadi Teks — Gratis</text>
+  <text x="240" y="420" font-family="system-ui, -apple-system, Segoe UI, Roboto" font-size="28" fill="#cbd5e1">Whisper open-source · Server self-hosted · Tanpa API berbayar</text>
+  <text x="80" y="590" font-family="system-ui, -apple-system, Segoe UI, Roboto" font-size="22" fill="#94a3b8">faster-whisper · FastAPI · Next.js</text>
+</svg>

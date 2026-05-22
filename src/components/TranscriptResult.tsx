@@ -24,7 +24,7 @@ export type TranscriptData = {
   text: string;
   language: string;
   outputMode: string;
-  source: "realtime" | "local-whisper";
+  source: "realtime" | "server-whisper";
   modelId?: string;
   fileName?: string;
   durationSec?: number;
@@ -97,7 +97,7 @@ export function TranscriptResult({
             <Badge variant="outline">{(data.language || "auto").toUpperCase()}</Badge>
             <Badge variant="secondary">{data.outputMode}</Badge>
             <Badge variant="outline">
-              {data.source === "realtime" ? "Realtime · Web Speech" : "Lokal · Whisper"}
+              {data.source === "realtime" ? "Realtime · Web Speech" : "Server · faster-whisper"}
             </Badge>
             {data.modelId && (
               <Badge variant="outline" className="font-mono text-[10px]">
